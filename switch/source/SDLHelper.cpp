@@ -13,8 +13,8 @@ static FC_Font* getFontFromMap(int size)
     std::unordered_map<int, FC_Font*>::const_iterator got = s_fonts.find(size);
     if (got == s_fonts.end() || got->second == NULL) {
         FC_Font* f = FC_CreateFont();
-        FC_LoadFont_RW(f, s_renderer, SDL_RWFromMem((void*)fontData.address, fontData.size),
-            SDL_RWFromMem((void*)fontExtData.address, fontExtData.size), 1, size, COLOR_BLACK, TTF_STYLE_NORMAL);
+        FC_LoadFont_RW(f, s_renderer, SDL_RWFromFile("romfs:/Ubuntu-Regular.ttf", "rb"), SDL_RWFromMem((void*)fontExtData.address, fontExtData.size),
+            1, size, COLOR_BLACK, TTF_STYLE_NORMAL);
         s_fonts.insert({size, f});
         return f;
     }

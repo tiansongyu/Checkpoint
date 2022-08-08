@@ -35,9 +35,9 @@ MainScreen::MainScreen(const InputState& input) : hid(rowlen * collen, collen, i
     selectionTimer   = 0;
     sprintf(ver, "v%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
     backupList    = std::make_unique<Scrollable>(538, 276, 414, 380, rows);
-    buttonBackup  = std::make_unique<Clickable>(956, 276, 220, 80, theme().c2, theme().c6, "Backup \ue004", true);
-    buttonRestore = std::make_unique<Clickable>(956, 360, 220, 80, theme().c2, theme().c6, "Restore \ue005", true);
-    buttonCheats  = std::make_unique<Clickable>(956, 444, 220, 80, theme().c2, theme().c6, "Cheats \ue0c5", true);
+    buttonBackup  = std::make_unique<Clickable>(956, 276, 220, 80, theme().c2, theme().c6, "备份 \ue004", true);
+    buttonRestore = std::make_unique<Clickable>(956, 360, 220, 80, theme().c2, theme().c6, "恢复 \ue005", true);
+    buttonCheats  = std::make_unique<Clickable>(956, 444, 220, 80, theme().c2, theme().c6, "秘籍 \ue0c5", true);
     buttonBackup->canChangeColorWhenSelected(true);
     buttonRestore->canChangeColorWhenSelected(true);
     buttonCheats->canChangeColorWhenSelected(true);
@@ -123,10 +123,10 @@ void MainScreen::draw() const
         u32 title_w, title_h, h, titleid_w, producer_w, user_w, subtitle_w, playtime_w;
         auto displayName = title.displayName();
         SDLH_GetTextDimensions(28, displayName.first.c_str(), &title_w, &title_h);
-        SDLH_GetTextDimensions(23, "Title: ", &subtitle_w, NULL);
-        SDLH_GetTextDimensions(23, "Title ID: ", &titleid_w, &h);
-        SDLH_GetTextDimensions(23, "Author: ", &producer_w, NULL);
-        SDLH_GetTextDimensions(23, "User: ", &user_w, NULL);
+        SDLH_GetTextDimensions(23, "游戏: ", &subtitle_w, NULL);
+        SDLH_GetTextDimensions(23, "游戏ID: ", &titleid_w, &h);
+        SDLH_GetTextDimensions(23, "作者: ", &producer_w, NULL);
+        SDLH_GetTextDimensions(23, "玩家: ", &user_w, NULL);
 
         if (title_w >= 534) {
             displayName.first = displayName.first.substr(0, 24) + "...";
@@ -138,7 +138,7 @@ void MainScreen::draw() const
         h += 6;
         if (!title.playTime().empty()) {
             boxRows++;
-            SDLH_GetTextDimensions(23, "Play Time: ", &playtime_w, NULL);
+            SDLH_GetTextDimensions(23, "游玩时间: ", &playtime_w, NULL);
         }
 
         u32 offset = 10 + title_h + h / 2;
@@ -149,22 +149,22 @@ void MainScreen::draw() const
 
         SDLH_DrawText(28, 538 - 8 + 482 - title_w, 8, theme().c5, displayName.first.c_str());
         if (displayName.second.length() > 0) {
-            SDLH_DrawText(23, 538, offset + h * i, theme().c5, "Title:");
+            SDLH_DrawText(23, 538, offset + h * i, theme().c5, "游戏:");
             SDLH_DrawTextBox(23, 538 + subtitle_w, offset + h * (i++), theme().c6, 478 - 4 * 2 - subtitle_w, displayName.second.c_str());
         }
 
-        SDLH_DrawText(23, 538, offset + h * i, theme().c5, "Title ID:");
+        SDLH_DrawText(23, 538, offset + h * i, theme().c5, "游戏ID:");
         SDLH_DrawTextBox(
             23, 538 + titleid_w, offset + h * (i++), theme().c6, 478 - 4 * 2 - titleid_w, StringUtils::format("%016llX", title.id()).c_str());
 
-        SDLH_DrawText(23, 538, offset + h * i, theme().c5, "Author:");
+        SDLH_DrawText(23, 538, offset + h * i, theme().c5, "作者:");
         SDLH_DrawTextBox(23, 538 + producer_w, offset + h * (i++), theme().c6, 478 - 4 * 2 - producer_w, title.author().c_str());
 
-        SDLH_DrawText(23, 538, offset + h * i, theme().c5, "User:");
+        SDLH_DrawText(23, 538, offset + h * i, theme().c5, "玩家:");
         SDLH_DrawTextBox(23, 538 + user_w, offset + h * (i++), theme().c6, 478 - 4 * 2 - user_w, title.userName().c_str());
 
         if (!title.playTime().empty()) {
-            SDLH_DrawText(23, 538, offset + h * i, theme().c5, "Play Time:");
+            SDLH_DrawText(23, 538, offset + h * i, theme().c5, "游玩时间:");
             SDLH_DrawTextBox(23, 538 + playtime_w, offset + h * (i++), theme().c6, 478 - 4 * 2 - playtime_w, title.playTime().c_str());
         }
 
@@ -182,23 +182,23 @@ void MainScreen::draw() const
     u32 ver_w, ver_h, checkpoint_h, checkpoint_w, inst_w, inst_h;
     SDLH_GetTextDimensions(20, ver, &ver_w, &ver_h);
     SDLH_GetTextDimensions(26, "checkpoint", &checkpoint_w, &checkpoint_h);
-    SDLH_GetTextDimensions(24, "\ue046 Instructions", &inst_w, &inst_h);
+    SDLH_GetTextDimensions(24, "\ue046 按键说明", &inst_w, &inst_h);
 
     if (wantInstructions && currentOverlay == nullptr) {
         SDLH_DrawRect(0, 0, 1280, 720, COLOR_OVERLAY);
         SDLH_DrawText(27, 1205, 646, theme().c6, "\ue085\ue086");
-        SDLH_DrawText(24, 58, 69, theme().c6, "\ue058 Tap to select title");
-        SDLH_DrawText(24, 58, 109, theme().c6, ("\ue026 Sort: " + sortMode()).c_str());
-        SDLH_DrawText(24, 100, 270, theme().c6, "\ue006 \ue080 to scroll between titles");
-        SDLH_DrawText(24, 100, 300, theme().c6, "\ue004 \ue005 to scroll between pages");
-        SDLH_DrawText(24, 100, 330, theme().c6, "\ue000 to enter the selected title");
-        SDLH_DrawText(24, 100, 360, theme().c6, "\ue001 to exit the selected title");
-        SDLH_DrawText(24, 100, 390, theme().c6, "\ue002 to change sort mode");
-        SDLH_DrawText(24, 100, 420, theme().c6, "\ue003 to multiselect title");
-        SDLH_DrawText(24, 100, 450, theme().c6, "Hold \ue003 to select all titles");
-        SDLH_DrawText(24, 616, 480, theme().c6, "\ue002 to delete a backup");
+        SDLH_DrawText(24, 58, 69, theme().c6, "\ue058 点击选择游戏");
+        SDLH_DrawText(24, 58, 109, theme().c6, ("\ue026 排序: " + sortMode()).c_str());
+        SDLH_DrawText(24, 100, 270, theme().c6, "按 \ue006 \ue080 在游戏间选择");
+        SDLH_DrawText(24, 100, 300, theme().c6, "按 \ue004 \ue005 在页面间选择");
+        SDLH_DrawText(24, 100, 330, theme().c6, "按 \ue000 确认选定游戏");
+        SDLH_DrawText(24, 100, 360, theme().c6, "按 \ue001 退出选定游戏");
+        SDLH_DrawText(24, 100, 390, theme().c6, "按 \ue002 更改排序");
+        SDLH_DrawText(24, 100, 420, theme().c6, "按 \ue003 多选游戏");
+        SDLH_DrawText(24, 100, 450, theme().c6, "按住 \ue003 选择所有游戏");
+        SDLH_DrawText(24, 616, 480, theme().c6, "按 \ue002 删除备份");
         if (Configuration::getInstance().isPKSMBridgeEnabled()) {
-            SDLH_DrawText(24, 100, 480, theme().c6, "\ue004 + \ue005 to enable PKSM bridge");
+            SDLH_DrawText(24, 100, 480, theme().c6, "按 \ue004 + \ue005 open PKSM");
         }
         if (gethostid() != INADDR_LOOPBACK) {
             if (g_ftpAvailable && Configuration::getInstance().isFTPEnabled()) {
@@ -213,7 +213,7 @@ void MainScreen::draw() const
     SDLH_DrawRect(0, 672, checkpoint_w + ver_w + 2 * 16 + 8, 40, lightBlack);
     SDLH_DrawText(26, 16, 672 + (40 - checkpoint_h) / 2 + 2, theme().c6, "checkpoint");
     SDLH_DrawText(20, 16 + checkpoint_w + 8, 672 + (40 - checkpoint_h) / 2 + checkpoint_h - ver_h, theme().c6, ver);
-    SDLH_DrawText(24, 16 * 3 + checkpoint_w + 8 + ver_w, 672 + (40 - checkpoint_h) / 2 + checkpoint_h - inst_h, theme().c6, "\ue046 Instructions");
+    SDLH_DrawText(24, 16 * 3 + checkpoint_w + 8 + ver_w, 672 + (40 - checkpoint_h) / 2 + checkpoint_h - inst_h, theme().c6, "\ue046 按键说明");
 
     if (g_isTransferringFile) {
         SDLH_DrawRect(0, 0, 1280, 720, COLOR_OVERLAY);
@@ -341,7 +341,7 @@ void MainScreen::handleEvents(const InputState& input)
                 }
                 else {
                     currentOverlay = std::make_shared<YesNoOverlay>(
-                        *this, "Restore selected save?",
+                        *this, "恢复备份吗?",
                         [this]() {
                             auto result = io::restore(this->index(TITLES), g_currentUId, this->index(CELLS), nameFromCell(this->index(CELLS)));
                             if (std::get<0>(result)) {
@@ -381,7 +381,7 @@ void MainScreen::handleEvents(const InputState& input)
             size_t index = this->index(CELLS);
             if (index > 0) {
                 currentOverlay = std::make_shared<YesNoOverlay>(
-                    *this, "Delete selected backup?",
+                    *this, "确定删除备份吗?",
                     [this, index]() {
                         Title title;
                         getTitle(title, g_currentUId, this->index(TITLES));
@@ -448,13 +448,13 @@ void MainScreen::handleEvents(const InputState& input)
             MS::clearSelectedEntries();
             updateButtons();
             blinkLed(4);
-            currentOverlay = std::make_shared<InfoOverlay>(*this, "Progress correctly saved to disk.");
+            currentOverlay = std::make_shared<InfoOverlay>(*this, "存档保存成功.");
         }
         else if (g_backupScrollEnabled) {
             if (getPKSMBridgeFlag()) {
                 if (this->index(CELLS) != 0) {
                     currentOverlay = std::make_shared<YesNoOverlay>(
-                        *this, "Send save to PKSM?",
+                        *this, "发送存档到PKSM吗?",
                         [this]() {
                             auto result = sendToPKSMBrigde(this->index(TITLES), g_currentUId, this->index(CELLS));
                             if (std::get<0>(result)) {
@@ -469,7 +469,7 @@ void MainScreen::handleEvents(const InputState& input)
             }
             else {
                 currentOverlay = std::make_shared<YesNoOverlay>(
-                    *this, "Backup selected save?",
+                    *this, "备份所选保存数据吗?",
                     [this]() {
                         auto result = io::backup(this->index(TITLES), g_currentUId, this->index(CELLS));
                         if (std::get<0>(result)) {
@@ -489,7 +489,7 @@ void MainScreen::handleEvents(const InputState& input)
         if (g_backupScrollEnabled) {
             if (getPKSMBridgeFlag() && this->index(CELLS) != 0) {
                 currentOverlay = std::make_shared<YesNoOverlay>(
-                    *this, "Receive save from PKSM?",
+                    *this, "PKSM 接收保存数据吗?",
                     [this]() {
                         auto result = recvFromPKSMBridge(this->index(TITLES), g_currentUId, this->index(CELLS));
                         if (std::get<0>(result)) {
@@ -504,7 +504,7 @@ void MainScreen::handleEvents(const InputState& input)
             else {
                 if (this->index(CELLS) != 0) {
                     currentOverlay = std::make_shared<YesNoOverlay>(
-                        *this, "Restore selected save?",
+                        *this, "恢复选定保存数据吗?",
                         [this]() {
                             auto result = io::restore(this->index(TITLES), g_currentUId, this->index(CELLS), nameFromCell(this->index(CELLS)));
                             if (std::get<0>(result)) {
@@ -533,7 +533,7 @@ void MainScreen::handleEvents(const InputState& input)
                 currentOverlay = std::make_shared<CheatManagerOverlay>(*this, key);
             }
             else {
-                currentOverlay = std::make_shared<InfoOverlay>(*this, "No available cheat codes for this title.");
+                currentOverlay = std::make_shared<InfoOverlay>(*this, "此游戏没有秘籍.");
             }
         }
     }
@@ -611,12 +611,12 @@ void MainScreen::updateButtons(void)
     }
 
     if (getPKSMBridgeFlag()) {
-        buttonBackup->text("Send \ue004");
-        buttonRestore->text("Receive \ue005");
+        buttonBackup->text("发送 \ue004");
+        buttonRestore->text("接收 \ue005");
     }
     else {
-        buttonBackup->text("Backup \ue004");
-        buttonRestore->text("Restore \ue005");
+        buttonBackup->text("备份 \ue004");
+        buttonRestore->text("恢复 \ue005");
     }
 }
 
@@ -624,11 +624,11 @@ std::string MainScreen::sortMode() const
 {
     switch (g_sortMode) {
         case SORT_LAST_PLAYED:
-            return "Last played";
+            return "上次游玩";
         case SORT_PLAY_TIME:
-            return "Play time";
+            return "游玩时间";
         case SORT_ALPHA:
-            return "Alphabetical";
+            return "按字母顺序";
         default:
             break;
     }

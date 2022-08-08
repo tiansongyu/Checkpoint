@@ -895,6 +895,12 @@ Uint8 FC_LoadFontFromTTF(FC_Font* font, SDL_Renderer* renderer, TTF_Font* ttf, T
     // load standard glyphs
     FC_LoadGlyphsFromTTF(font, ttf, surfaces, &num_surfaces, w, h);
 
+    FC_SetLoadingString(
+        font, "\u73a9\u5bb6\u6e38\u65f6\u95f4\u4f5c\u8005\u95f4\u6309\u952e\u8bf4\u660e\u70b9\u51fb\u9009\u62e9\u6392\u5e8f\u5728\u4e4b\u9875\u9762"
+              "\u786e\u8ba4\u5b9a\u6240\u6709\u9000\u51fa\u66f4\u6539\u591a\u620f\u5220\u9664\u5907\u4efd\u6062\u590d\u5417\u5b58\u6863\u4fdd\u6210"
+              "\u529f\u53d1\u9001\u5230\u6570\u636e\u6536\u6ca1\u4e0a\u6b21\u5b57\u6bcd\u987a\u65b9\u79d8\u7c4d\u4f4f");
+
+    FC_LoadGlyphsFromTTF(font, ttf, surfaces, &num_surfaces, w, h);
     // load system symbols
     FC_SetLoadingString(font, "\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue041\ue045\ue046\ue085\ue086\ue058\ue080\ue071\ue0c5\ue026"
 
